@@ -34,6 +34,9 @@ class TodoListWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     todo.title,
+                     style: TextStyle(
+                      decoration: todo.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,  
+                    ),
                   ),
                 ),
                 Row(
