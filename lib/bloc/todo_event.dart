@@ -2,7 +2,7 @@ part of 'todo_bloc.dart';
 
 @immutable
 sealed class TodoEvent {}
-class LoadTodos extends TodoEvent {}
+class LoadTodosEven extends TodoEvent {}
 
 class AddTodoEvent extends TodoEvent {
   final String title;

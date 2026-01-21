@@ -6,7 +6,9 @@ import 'package:myapp/bloc/todo_bloc.dart';
 import 'package:myapp/model/todo_model.dart';
 import 'package:myapp/views/widgets/app_input_text_field_widget.dart';
 import 'package:myapp/views/widgets/custom_delete_confirm_dialog.dart';
+import 'package:myapp/views/widgets/show_app_snack_bar.dart';
 import 'package:myapp/views/widgets/todo_list_widget.dart';
+
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
 
@@ -18,13 +20,10 @@ class _TodoScreenState extends State<TodoScreen> {
   TextEditingController searchController = TextEditingController();
   TextEditingController titleController = TextEditingController();
 
-  late TodoModel todoItem = TodoModel(
-    id: '',
-    title: '',
-    isCompleted: false,
-  );
+  late TodoModel todoItem = TodoModel(id: '', title: '', isCompleted: false);
   List<TodoModel> todoList = [];
   late Timer _searchTime;
+  bool isEdit = false;
 
   @override
   void initState() {
@@ -42,23 +41,32 @@ class _TodoScreenState extends State<TodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Todos (BLoC)'), centerTitle: true),
-      body: BlocBuilder<TodoBloc, TodoState>(
-        builder: (context, state) {
+      body: BlocConsumer<TodoBloc, TodoState>(
+        listener: (contextBT, state) {
+          if (state is TodoLoaded) {
+            /// bloc load todo list success
+            todoList = state.todos;
+          }
+          else if (state is TodoFiltered) {
+            /// bloc search filter success
+            todoList = state.filteredTodos;
+          } else 
+          if (state is TodoDoublicatData) {
+            /// bloc doublicat data
+            ShowAppSnackBar.showSnakeBar(
+              context: context,
+              title: state.message,
+            );
+          }
+        },
+        builder: (contextBT, state) {
           if (state is TodoLoading) {
             /// bloc loading todo list
             return const Center(child: CircularProgressIndicator());
           } else if (state is TodoError) {
             /// bloc load todo list error
             return Center(child: Text(state.message));
-          } else if (state is TodoDoublicatData) {
-            /// bloc doublicat data
-          } else if (state is TodoFiltered) {
-            /// bloc search filter success
-            todoList = state.filteredTodos;
-          } else if (state is TodoLoaded) {
-            /// bloc load todo list success
-            todoList = state.todos;
-          }
+          } 
           return Container(
             margin: EdgeInsets.all(10),
             child: Column(
@@ -72,7 +80,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     _searchTime
                         .cancel(); // Cancel the previous timer when the text changes
                     _searchTime = Timer(const Duration(seconds: 1), () {
-                      context.read<TodoBloc>().add(SearchTodoEvent(value));
+                      contextBT.read<TodoBloc>().add(SearchTodoEvent(value));
                     });
                   },
                   onSubmitted: (String value) {},
@@ -99,7 +107,7 @@ class _TodoScreenState extends State<TodoScreen> {
                             return;
                           }
                           if (todoItem.id.isNotEmpty) {
-                            context.read<TodoBloc>().add(
+                            contextBT.read<TodoBloc>().add(
                               UpdateTodoEvent(
                                 id: todoItem.id,
                                 title: titleController.text.trim(),
@@ -107,18 +115,18 @@ class _TodoScreenState extends State<TodoScreen> {
                             );
                           } else {
                             /// bloc add todo list
-                            context.read<TodoBloc>().add(
-                              AddTodoEvent(
-                                titleController.text.trim(),
-                              ),
+                            contextBT.read<TodoBloc>().add(
+                              AddTodoEvent(titleController.text.trim()),
                             );
                           }
+                          searchController.clear();
                           titleController.clear();
                           todoItem = TodoModel(
                             id: '',
                             title: '',
                             isCompleted: false,
                           );
+                          isEdit = false;
                         },
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
@@ -131,7 +139,7 @@ class _TodoScreenState extends State<TodoScreen> {
                             vertical: 12,
                           ),
                           child: Text(
-                            todoItem.id.isNotEmpty ? "Update" : 'Add',
+                            isEdit ? "Update" : 'Add',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -151,19 +159,23 @@ class _TodoScreenState extends State<TodoScreen> {
                       child: TodoListWidget(
                         todoList: todoList,
                         onChangeCheckbox: (bool? value, String id) {
-                          context.read<TodoBloc>().add(
+                          contextBT.read<TodoBloc>().add(
                             ToggleTodoEvent(id, value ?? false),
                           );
                         },
                         onUpdateTodo: (TodoModel data) {
                           todoItem = data;
+                          isEdit = true;
                           titleController.text = data.title;
                         },
                         onDeleteTodo: (String id) {
                           CustomDeleteConfirmDialog.show(
                             context: context,
                             onConfirm: () {
-                              context.read<TodoBloc>().add(DeleteTodoEvent(id));
+                              contextBT.read<TodoBloc>().add(DeleteTodoEvent(id));
+                              titleController.clear();
+                              searchController.clear();
+                              isEdit = false;
                             },
                           );
                         },

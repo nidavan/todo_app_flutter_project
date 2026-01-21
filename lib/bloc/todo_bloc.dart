@@ -10,7 +10,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoRepository repository;
 
   TodoBloc(this.repository) : super(TodoInitial()) {
-    on<LoadTodos>(_onLoadTodos);
+    on<LoadTodosEven>(_onLoadTodos);
     on<AddTodoEvent>(_onAddTodo);
     on<UpdateTodoEvent>(_onUpdateTodo);
     on<ToggleTodoEvent>(_onToggleTodo);
@@ -18,7 +18,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<SearchTodoEvent>(_onSearchTodo);
   }
 
-  Future<void> _onLoadTodos(LoadTodos event, Emitter<TodoState> emit) async {
+  Future<void> _onLoadTodos(LoadTodosEven event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
     try {
       final todos = await repository.fetchTodos();
@@ -49,7 +49,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       // 3️⃣ Insert if no duplicate
       await repository.addTodo(event.title);
 
-      add(LoadTodos());
+      add(LoadTodosEven());
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -81,7 +81,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         title: event.title,
       );
 
-      add(LoadTodos());
+      add(LoadTodosEven());
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -93,7 +93,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   ) async {
     try {
       await repository.toggleTodo(event.id, event.isCompleted);
-      add(LoadTodos());
+      add(LoadTodosEven());
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -105,7 +105,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   ) async {
     try {
       await repository.deleteTodo(event.id);
-      add(LoadTodos());
+      add(LoadTodosEven());
     } catch (e) {
       emit(TodoError(e.toString()));
     }

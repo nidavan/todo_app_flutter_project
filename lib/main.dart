@@ -1,56 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/bloc/todo_bloc.dart';
-import 'package:myapp/service/todo_repository.dart';
-import 'package:myapp/views/todo_screen.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'service/todo_repository.dart';
+import 'bloc/todo_bloc.dart';
+import 'views/todo_screen.dart';
 
 Future<void> main() async {
+  // REQUIRED for async init
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ✅ INITIALIZE SUPABASE FIRST (VERY IMPORTANT)
   await Supabase.initialize(
     url: 'https://iixtgksjbnydrwlplemh.supabase.co',
     anonKey: 'sb_publishable_QKLqbLQC-j6-E753TwpHeQ_8RxbWpum',
   );
+
+  // ✅ THEN run app
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (_) => TodoRepository(),
-      child: BlocProvider(
-        create: (context) =>
-            TodoBloc(context.read<TodoRepository>())
-              ..add(LoadTodos()),
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // TRY THIS: Try running your application with "flutter run". You'll see
-            // the application has a purple toolbar. Then, without quitting the app,
-            // try changing the seedColor in the colorScheme below to Colors.green
-            // and then invoke "hot reload" (save your changes or press the "hot
-            // reload" button in a Flutter-supported IDE, or press "r" if you used
-            // the command line to start the app).
-            //
-            // Notice that the counter didn't reset back to zero; the application
-            // state is not lost during the reload. To reset the state, use hot
-            // restart instead.
-            //
-            // This works for code too, not just values: Most code changes can be
-            // tested with just a hot reload.
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          ),
-         
-          home: TodoScreen(),
+    return MultiProvider(
+      providers: [
+        // Repository
+        Provider<TodoRepository>(create: (context) => TodoRepository()),
+
+        // Bloc depends on Repository
+        BlocProvider<TodoBloc>(
+          create: (context) =>
+              TodoBloc(context.read<TodoRepository>())..add(LoadTodosEven()),
         ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Todo App',
+        theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+        home: const TodoScreen(),
       ),
     );
   }
