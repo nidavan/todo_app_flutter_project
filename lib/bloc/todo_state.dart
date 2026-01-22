@@ -18,6 +18,7 @@ class TodoError extends TodoState {
 
   TodoError(this.message);
 }
+
 class TodoDoublicatData extends TodoState {
   final String message;
 
@@ -30,3 +31,8 @@ class TodoFiltered extends TodoState {
   TodoFiltered(this.filteredTodos);
 }
 
+class SelectEditTodoStare extends TodoState {
+  final bool isEdit;
+  final TodoModel itemEdit;
+  SelectEditTodoStare({required this.isEdit, required this.itemEdit});
+}

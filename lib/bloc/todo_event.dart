@@ -2,6 +2,7 @@ part of 'todo_bloc.dart';
 
 @immutable
 sealed class TodoEvent {}
+
 class LoadTodosEven extends TodoEvent {}
 
 class AddTodoEvent extends TodoEvent {
@@ -14,10 +15,7 @@ class UpdateTodoEvent extends TodoEvent {
   final String id;
   final String title;
 
-  UpdateTodoEvent({
-    required this.id,
-    required this.title,
-  });
+  UpdateTodoEvent({required this.id, required this.title});
 }
 
 class ToggleTodoEvent extends TodoEvent {
@@ -38,3 +36,8 @@ class SearchTodoEvent extends TodoEvent {
   SearchTodoEvent(this.query);
 }
 
+class SelectEditTodoEvent extends TodoEvent {
+  final bool isEdit;
+  final TodoModel itemEdit;
+  SelectEditTodoEvent({required this.isEdit, required this.itemEdit});
+}

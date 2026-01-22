@@ -7,15 +7,19 @@ part 'todo_event.dart';
 part 'todo_state.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
-  final TodoRepository repository;
+  final TodoRepository repository = TodoRepository();
 
-  TodoBloc(this.repository) : super(TodoInitial()) {
+  TodoBloc() : super(TodoInitial()) {
     on<LoadTodosEven>(_onLoadTodos);
     on<AddTodoEvent>(_onAddTodo);
     on<UpdateTodoEvent>(_onUpdateTodo);
     on<ToggleTodoEvent>(_onToggleTodo);
     on<DeleteTodoEvent>(_onDeleteTodo);
     on<SearchTodoEvent>(_onSearchTodo);
+
+    on<SelectEditTodoEvent>((event, emit) {
+     emit(SelectEditTodoStare(isEdit: event.isEdit, itemEdit: event.itemEdit));
+    });
   }
 
   Future<void> _onLoadTodos(LoadTodosEven event, Emitter<TodoState> emit) async {
@@ -129,9 +133,5 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       emit(TodoError(e.toString()));
     }
   }
-  // TodoBloc() : super(TodoInitial()) {
-  //   on<TodoEvent>((event, emit) {
-  //     // TODO: implement event handler
-  //   });
-  // }
+ 
 }
