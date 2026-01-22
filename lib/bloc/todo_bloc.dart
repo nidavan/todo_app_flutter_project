@@ -18,11 +18,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<SearchTodoEvent>(_onSearchTodo);
 
     on<SelectEditTodoEvent>((event, emit) {
-     emit(SelectEditTodoStare(isEdit: event.isEdit, itemEdit: event.itemEdit));
+      emit(SelectEditTodoStare(isEdit: event.isEdit, itemEdit: event.itemEdit));
     });
   }
 
-  Future<void> _onLoadTodos(LoadTodosEven event, Emitter<TodoState> emit) async {
+  Future<void> _onLoadTodos(
+    LoadTodosEven event,
+    Emitter<TodoState> emit,
+  ) async {
     emit(TodoLoading());
     try {
       final todos = await repository.fetchTodos();
@@ -31,7 +34,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       emit(TodoError(e.toString()));
     }
   }
-
 
   Future<void> _onAddTodo(AddTodoEvent event, Emitter<TodoState> emit) async {
     try {
@@ -46,7 +48,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       );
 
       if (isDuplicate) {
-        emit(TodoDoublicatData('A todo with this title already exists!'));
+        emit(TodoDoublicatData('You can not add this title already exists!'));
         return;
       }
 
@@ -76,14 +78,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       );
 
       if (isDuplicate) {
-        emit(TodoDoublicatData('A todo with this title already exists!'));
+        emit(
+          TodoDoublicatData('You can not update this title already exists!'),
+        );
         return;
       }
 
-      await repository.updateTodo(
-        id: event.id,
-        title: event.title,
-      );
+      await repository.updateTodo(id: event.id, title: event.title);
 
       add(LoadTodosEven());
     } catch (e) {
@@ -133,5 +134,4 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       emit(TodoError(e.toString()));
     }
   }
- 
 }

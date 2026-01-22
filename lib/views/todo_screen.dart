@@ -50,16 +50,19 @@ class _TodoScreenState extends State<TodoScreen> {
               /// bloc load todo list success
               todoList = state.todos;
               isLoading = false;
-            } else if (state is TodoFiltered) {
+            }
+            if (state is TodoFiltered) {
               /// bloc search filter success
               todoList = state.filteredTodos;
-            } else if (state is TodoDoublicatData) {
+            }
+            if (state is TodoDoublicatData) {
               /// bloc doublicat data
               ShowAppSnackBar.showSnakeBar(
                 context: context,
                 title: state.message,
               );
-            } else if (state is SelectEditTodoStare) {
+            }
+            if (state is SelectEditTodoStare) {
               isEdit = state.isEdit;
               todoItem = state.itemEdit;
               titleController.text = todoItem.title;
@@ -116,17 +119,17 @@ class _TodoScreenState extends State<TodoScreen> {
                               );
                               return;
                             }
-                            if (todoItem.id.isNotEmpty) {
+                            if (isEdit) {
                               contextBT.read<TodoBloc>().add(
                                 UpdateTodoEvent(
                                   id: todoItem.id,
-                                  title: titleController.text.trim(),
+                                  title: titleController.text,
                                 ),
                               );
                             } else {
                               /// bloc add todo list
                               contextBT.read<TodoBloc>().add(
-                                AddTodoEvent(titleController.text.trim()),
+                                AddTodoEvent(titleController.text),
                               );
                             }
                             titleController.clear();
