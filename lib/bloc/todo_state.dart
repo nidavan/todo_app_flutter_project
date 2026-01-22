@@ -34,5 +34,5 @@ class TodoFiltered extends TodoState {
 class SelectEditTodoStare extends TodoState {
   final bool isEdit;
   final TodoModel itemEdit;
-  SelectEditTodoStare({required this.isEdit, required this.itemEdit});
+  SelectEditTodoStare({this.isEdit = false, required this.itemEdit});
 }

@@ -110,6 +110,10 @@ class _TodoScreenState extends State<TodoScreen> {
                           onTap: () {
                             /// bloc no text input
                             if (titleController.text.trim().isEmpty) {
+                              ShowAppSnackBar.showSnakeBar(
+                                context: context,
+                                title: "Please input title",
+                              );
                               return;
                             }
                             if (todoItem.id.isNotEmpty) {
@@ -184,7 +188,6 @@ class _TodoScreenState extends State<TodoScreen> {
                                 contextBT.read<TodoBloc>().add(
                                   DeleteTodoEvent(id),
                                 );
-                                titleController.clear();
                               },
                             );
                           },
