@@ -123,13 +123,13 @@ class _TodoScreenState extends State<TodoScreen> {
                               contextBT.read<TodoBloc>().add(
                                 UpdateTodoEvent(
                                   id: todoItem.id,
-                                  title: titleController.text,
+                                  title: titleController.text.trim(),
                                 ),
                               );
                             } else {
                               /// bloc add todo list
                               contextBT.read<TodoBloc>().add(
-                                AddTodoEvent(titleController.text),
+                                AddTodoEvent(titleController.text.trim()),
                               );
                             }
                             titleController.clear();
@@ -143,7 +143,7 @@ class _TodoScreenState extends State<TodoScreen> {
                           child: Container(
                             margin: EdgeInsets.only(left: 10),
                             decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: isEdit ? Colors.blue : Colors.green,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(6),
                               ),
@@ -188,6 +188,20 @@ class _TodoScreenState extends State<TodoScreen> {
                             CustomDeleteConfirmDialog.show(
                               context: context,
                               onConfirm: () {
+                                /// bloc check delete the same item edit
+                                if (isEdit &&
+                                    todoItem.id.isNotEmpty &&
+                                    todoItem.id == id) {
+                                  titleController.clear();
+                                  todoItem = TodoModel(
+                                    id: '',
+                                    title: '',
+                                    isCompleted: false,
+                                  );
+                                  isEdit = false;
+                                }
+
+                                /// bloc call event delete
                                 contextBT.read<TodoBloc>().add(
                                   DeleteTodoEvent(id),
                                 );

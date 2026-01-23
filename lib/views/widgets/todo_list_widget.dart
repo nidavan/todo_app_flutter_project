@@ -42,7 +42,7 @@ class TodoListWidget extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
                         onUpdateTodo(todo);
                       },
