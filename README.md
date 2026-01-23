@@ -58,6 +58,3 @@ In this project i choose Superbase.
 # Command for run release on device
 
 => flutter run --release (it run release on device)
-
-# Command for run release apk
-=> flutter build apk --release
