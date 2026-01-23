@@ -55,7 +55,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       // 3️⃣ Insert if no duplicate
       await repository.addTodo(event.title);
 
-      add(LoadTodosEven());
+      emit(AddTodoSuccessState());
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -85,8 +85,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
 
       await repository.updateTodo(id: event.id, title: event.title);
-
-      add(LoadTodosEven());
+      emit(UpdateTodoSuccessState());
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -110,7 +109,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   ) async {
     try {
       await repository.deleteTodo(event.id);
-      add(LoadTodosEven());
+      emit(DeletTodoSuccessState(itemId: event.id));
     } catch (e) {
       emit(TodoError(e.toString()));
     }

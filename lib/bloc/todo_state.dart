@@ -7,6 +7,13 @@ final class TodoInitial extends TodoState {}
 
 class TodoLoading extends TodoState {}
 
+class AddTodoSuccessState extends TodoState {}
+class UpdateTodoSuccessState extends TodoState {}
+class DeletTodoSuccessState extends TodoState {
+  final String itemId;
+  DeletTodoSuccessState({ required this.itemId});
+}
+
 class TodoLoaded extends TodoState {
   final List<TodoModel> todos;
 
