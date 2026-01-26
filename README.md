@@ -61,3 +61,16 @@ In this project i choose Superbase.
 
 # Command for run release apk
 => flutter build apk --release
+
+
+# Command for list devices
+=> flutter devices
+
+==> Found 2 connected devices:
+
+  macOS (desktop) • macos
+  Chrome (web)    • chrome 
+
+# Command for run devices
+=> flutter run -d chrome
+ 
