@@ -7,7 +7,7 @@ class TodoRepository {
     final res = await _client
         .from('todos')
         .select()
-        .order('created_at', ascending: false);
+        .order('title', ascending: true);
 
     return (res as List).map((e) => TodoModel.fromJson(e)).toList();
   }
@@ -37,5 +37,14 @@ class TodoRepository {
 
   Future<void> deleteTodo(String id) async {
     await _client.from('todos').delete().eq('id', id);
+  }
+
+    Future<List<TodoModel>> fetchFiterbyTodos(bool isAscending) async {
+    final res = await _client
+        .from('todos')
+        .select()
+        .order('title', ascending: isAscending);
+
+    return (res as List).map((e) => TodoModel.fromJson(e)).toList();
   }
 }

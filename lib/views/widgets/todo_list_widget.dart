@@ -41,11 +41,18 @@ class TodoListWidget extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {
-                        onUpdateTodo(todo);
-                      },
+                    Builder(
+                      builder: (context) {
+                        if(todo.isCompleted) {
+                          return SizedBox.shrink();
+                        }
+                        return IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            onUpdateTodo(todo);
+                          },
+                        );
+                      }
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),

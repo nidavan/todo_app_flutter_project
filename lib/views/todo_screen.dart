@@ -115,21 +115,43 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Column(
                   children: [
                     /// bloc search filter
-                    AppInputTextFieldWidget(
-                      controller: searchController,
-                      hintText: 'Search',
-                      leftIcon: true,
-                      onChange: (String value) {
-                        _searchTime
-                            .cancel(); // Cancel the previous timer when the text changes
-                        _searchTime = Timer(const Duration(seconds: 1), () {
-                          contextBT.read<TodoBloc>().add(
-                            SearchTodoEvent(value),
-                          );
-                        });
-                      },
-                      onSubmitted: (String value) {},
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppInputTextFieldWidget(
+                            controller: searchController,
+                            hintText: 'Search',
+                            leftIcon: true,
+                            onChange: (String value) {
+                              _searchTime
+                                  .cancel(); // Cancel the previous timer when the text changes
+                              _searchTime = Timer(const Duration(seconds: 1), () {
+                                contextBT.read<TodoBloc>().add(
+                                  SearchTodoEvent(value),
+                                );
+                              });
+                            },
+                            onSubmitted: (String value) {},
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        TextButton(
+                          onPressed: () {
+                            contextBT.read<TodoBloc>().add(SearchFilterTodoEvent(isFilterByDes: false));
+                          },
+                          child: const Text('Filter by Des', style: TextStyle(color: Colors.deepPurple)),
+                        ),
+                        SizedBox(width: 10,),
+                        TextButton(
+                          onPressed: () {
+                            contextBT.read<TodoBloc>().add(SearchFilterTodoEvent(isFilterByDes: true));
+                          },
+                          child: const Text('Filter by Ass', style: TextStyle(color: Colors.pink)),
+                        ),
+                      
+                      ],
                     ),
+
 
                     /// bloc add or update
                     Container(

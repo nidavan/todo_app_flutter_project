@@ -20,6 +20,15 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<SelectEditTodoEvent>((event, emit) {
       emit(SelectEditTodoStare(isEdit: event.isEdit, itemEdit: event.itemEdit));
     });
+    on<SearchFilterTodoEvent>((event, emit) async {
+      emit(TodoLoading());
+      try {
+        final todos = await repository.fetchFiterbyTodos(event.isFilterByDes);
+        emit(TodoLoaded(todos));
+      } catch (e) {
+        emit(TodoError(e.toString()));
+      }
+    });
   }
 
   Future<void> _onLoadTodos(
@@ -44,7 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
       // 2️⃣ Check for duplicate title
       final isDuplicate = todos.any(
-        (todo) => todo.title.toLowerCase() == event.title.toLowerCase(),
+        (todo) => todo.title == event.title,
       );
 
       if (isDuplicate) {

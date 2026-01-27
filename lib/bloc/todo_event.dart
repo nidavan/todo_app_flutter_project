@@ -41,3 +41,8 @@ class SelectEditTodoEvent extends TodoEvent {
   final TodoModel itemEdit;
   SelectEditTodoEvent({required this.isEdit, required this.itemEdit});
 }
+
+class SearchFilterTodoEvent extends TodoEvent {
+  final bool isFilterByDes;
+  SearchFilterTodoEvent({required this.isFilterByDes});
+}
