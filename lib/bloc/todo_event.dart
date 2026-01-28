@@ -3,7 +3,10 @@ part of 'todo_bloc.dart';
 @immutable
 sealed class TodoEvent {}
 
-class LoadTodosEven extends TodoEvent {}
+class LoadTodosEven extends TodoEvent {
+  final bool isLoading;
+  LoadTodosEven({this.isLoading = true});
+}
 
 class AddTodoEvent extends TodoEvent {
   final String title;

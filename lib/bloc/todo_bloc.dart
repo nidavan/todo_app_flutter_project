@@ -35,7 +35,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     LoadTodosEven event,
     Emitter<TodoState> emit,
   ) async {
-    emit(TodoLoading());
+    if(event.isLoading){
+      emit(TodoLoading());
+    }
     try {
       final todos = await repository.fetchTodos();
       emit(TodoLoaded(todos));
@@ -106,7 +108,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   ) async {
     try {
       await repository.toggleTodo(event.id, event.isCompleted);
-      add(LoadTodosEven());
+      add(LoadTodosEven(isLoading: false));
     } catch (e) {
       emit(TodoError(e.toString()));
     }
